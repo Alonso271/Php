@@ -66,14 +66,14 @@ if (empty($_REQUEST["nombre"])) {
     <h2>REALICE SU COMPRA <?= strtoupper($_REQUEST["nombre"])?></h2>
     <p>Este es su pedido: 
         <?php
-            if (isset($_REQUEST["anotar"])) {
-            $carro = $_SESSION["carrito"];
-            array_push($carro,$_REQUEST["furtas"] => $_REQUEST["cantidad"]);
-            $_SESSION["carrito"] = $carro;
-            foreach ($_SESSION["carrito"] as $key => $value) {
-                echo '<br>'.$key.$value;
-            }
-            }
+ if (isset($_REQUEST["anotar"])) {
+    $carro = $_SESSION["carrito"];
+    $carro[$_REQUEST["frutas"]] = $_REQUEST["cantidad"];
+    $_SESSION["carrito"] = $carro;
+    foreach ($_SESSION["carrito"] as $key => $value) {
+        echo '<br>'.$key." ".$value;
+    }
+    }
         ?>
     </p>
     <form action="" method="post">
@@ -106,10 +106,9 @@ if (isset($_REQUEST["terminar"])) {
         <?php
             if (isset($_REQUEST["anotar"])) {
             $carro = $_SESSION["carrito"];
-            array_push($carro,$_REQUEST["cantidad"]);
+            $carro[$_REQUEST["frutas"]] = $_REQUEST["cantidad"];
             $_SESSION["carrito"] = $carro;
             foreach ($_SESSION["carrito"] as $key => $value) {
-                $key = $_REQUEST["frutas"];
                 echo '<br>'.$key.$value;
             }
             }
@@ -124,8 +123,4 @@ if (isset($_REQUEST["terminar"])) {
 }
     }
 }
-
-
-
-
 ?>
