@@ -1,8 +1,5 @@
 <?php
 session_start();
-if (empty($_SESSION["carrito"])) {
-    $_SESSION["carrito"] = [];
-}
 if (empty($_REQUEST["nombre"])) {
     ?>
   <!DOCTYPE html>
@@ -24,103 +21,54 @@ if (empty($_REQUEST["nombre"])) {
   <?php 
 }else{
         $_SESSION["nombre"] = $_REQUEST["nombre"];
-      if (empty($_REQUEST["cantidad"])) {
         ?>
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-        </head>
-        <body>
-            <h1>LA FRUTERIA DEL SIGLO XXI</h1>
-            <h2>REALICE SU COMPRA <?= strtoupper($_REQUEST["nombre"])?></h2>
-            <form action="" method="post">
-                <h3>
-                    Selecciona la fruta: 
-                    <select name="frutas">
-                        <option value="platanos">Platanos</option>
-                        <option value="naranjas">Naranjas</option>
-                        <option value="limones">Limones</option>
-                    </select>
-                    Cantidad: <input type="number" name="cantidad">
-                    <button name="anotar">Anotar</button>
-                    <button name="terminar">Terminar</button>
-                </h3> 
-            </form>
-        </body>
-        </html>
+         <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>LA FRUTERIA DEL SIGLO XXI</h1>
+        <h2>REALICE SU COMPRA <?= strtoupper($_REQUEST["nombre"])?></h2>
+        <form action="" method="post">
+            <?php
+                        if (isset($_REQUEST["accion"])) {
+                            if ($_REQUEST["accion"] == "anotar") {
+                                echo " <p>Este es su pedido:</p>";
+                                if (isset($_SESSION["carrito"][$_REQUEST["frutas"]])) {
+                                $_SESSION["carrito"][$_REQUEST["frutas"]] += $_REQUEST["cantidad"];
+                                }else {
+                                $_SESSION["carrito"][$_REQUEST["frutas"]] = $_REQUEST["cantidad"];
+                                }
+                                foreach ($_SESSION["carrito"] as $key => $value) {
+                                echo '<br>'.$key." ".$value;
+                                }
+                            }
+                        }
+            ?>
+            <h3>
+                <select name="frutas">
+                    <option value="platanos">Platanos</option>
+                    <option value="naranjas">Naranjas</option>
+                    <option value="limones">Limones</option>
+                    <option value="manzana">Manzana</option>
+                </select>
+                Cantidad: <input type="number" name="cantidad">
+                <input type="submit" name="accion" value="anotar">
+                <input type="submit" name="accion" value="terminar">
+            </h3> 
+        </form>
+    </body>
+    </html> 
         <?php
-    }else {
-?>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>LA FRUTERIA DEL SIGLO XXI</h1>
-    <h2>REALICE SU COMPRA <?= strtoupper($_REQUEST["nombre"])?></h2>
-    <p>Este es su pedido: 
-        <?php
- if (isset($_REQUEST["anotar"])) {
-    $carro = $_SESSION["carrito"];
-    $carro[$_REQUEST["frutas"]] = $_REQUEST["cantidad"];
-    $_SESSION["carrito"] = $carro;
-    foreach ($_SESSION["carrito"] as $key => $value) {
-        echo '<br>'.$key." ".$value;
-    }
-    }
-        ?>
-    </p>
-    <form action="" method="post">
-        <h3>
-            <select name="frutas">
-                <option value="platanos">Platanos</option>
-                <option value="naranjas">Naranjas</option>
-                <option value="limones">Limones</option>
-                <option value="manzana">Manzana</option>
-            </select>
-            Cantidad: <input type="number" name="cantidad">
-            <button type="sumbit" name="anotar">Anotar</button>
-            <button type="sumbit" name="terminar">Terminar</button>
-        </h3> 
-    </form>
-</body>
-</html>    
-<?php
-if (isset($_REQUEST["terminar"])) {
+if ($_REQUEST["accion"] == "terminar") {
     ?>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>LA FRUTERIA DEL SIGLO XXI</h1>
-    <p>Este es su pedido: 
-        <?php
-            if (isset($_REQUEST["anotar"])) {
-            $carro = $_SESSION["carrito"];
-            $carro[$_REQUEST["frutas"]] = $_REQUEST["cantidad"];
-            $_SESSION["carrito"] = $carro;
-            foreach ($_SESSION["carrito"] as $key => $value) {
-                echo '<br>'.$key.$value;
-            }
-            }
-        ?>
-    </p>
-    <form action="" method="post">
-            <input type="button" value="NUEVO CLIENTE">
-    </form>
-</body>
-</html>    
-<?php
+    <br> Muchas gracias, por su pedido. <br><br>
+    <input type="button" value=" NUEVO CLIENTE " onclick="location.href='<?=$_SERVER['PHP_SELF'];?>'">
+    <?php 
+    session_destroy();
+    exit;
 }
     }
-}
 ?>
